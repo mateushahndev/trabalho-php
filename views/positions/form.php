@@ -1,6 +1,6 @@
 <div class="page-header">
     <h1>Nova posição</h1>
-    <small><a href="/posicoes" class="muted">Voltar</a></small>
+    <small><a href="/posicoes" class="muted">← Voltar</a></small>
 </div>
 <form class="form form-card" method="post" action="/posicoes" novalidate>
     <div class="form-group">

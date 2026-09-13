@@ -1,6 +1,6 @@
 <div class="page-header">
     <h1>Fechar posição</h1>
-    <small><a href="/posicoes" class="muted">Voltar</a></small>
+    <small><a href="/posicoes" class="muted">← Voltar</a></small>
 </div>
 <div class="info-box">
     <strong>Resumo:</strong>

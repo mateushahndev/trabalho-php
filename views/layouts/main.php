@@ -10,7 +10,6 @@
 <nav class="topbar">
     <div class="container topbar-inner">
         <a class="brand" href="/">Opções<span>B3</span></a>
-
         <div class="nav-links">
             <a href="/">Dashboard</a>
             <a href="/contratos">Contratos</a>

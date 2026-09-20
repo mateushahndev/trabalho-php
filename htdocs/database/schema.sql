@@ -18,7 +18,7 @@ CREATE TABLE contratos (
     preco_exercicio  NUMERIC(12,2) NOT NULL CHECK (preco_exercicio > 0),
     data_vencto      DATE          NOT NULL,
     preco_atual      NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (preco_atual >= 0),
-    criado_em        TIMESTAMP     NOT NULL DEFAULT NOW(),
+    criado_em        TIMESTAMP     NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE posicoes (

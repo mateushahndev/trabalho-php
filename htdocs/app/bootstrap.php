@@ -52,7 +52,7 @@ function br_date(mixed $value): string
         return date('Y-m-d\TH:i:s');
     }
     $value = (string) $value;
-    foreach (['Y-m-d H:i:s', 'Y-m-d\TH:i:s', 'Y-m-d\TH:i', 'Y-m-d'] as $format) {
+    foreach (['Y-m-d H:i:s.u', 'Y-m-d\TH:i:s', 'Y-m-d\TH:i', 'Y-m-d'] as $format) {
         $date = \DateTime::createFromFormat($format, $value);
         if ($date !== false) {
             return str_contains((string) $format, 'H')

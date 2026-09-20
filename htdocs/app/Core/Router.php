@@ -28,7 +28,7 @@ final class Router
 
         $csrfValid = true;
         if ($method === 'POST') {
-            $csrfValid = Csrf::valid($_POST['_csrf'] ?? null);
+            $csrfValid = Csrf::valid($_POST['_csrf']);
         }
 
         $path = parse_url($uri, PHP_URL_PATH) ?? '/';

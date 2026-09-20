@@ -5,8 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   flashes.forEach((el) => {
     const ms = 8000;
     setTimeout(() => {
-      el.classList.add('flash-hidden');
-      setTimeout(() => el.remove(), 450);
+      el.remove();
     }, ms);
   });
 

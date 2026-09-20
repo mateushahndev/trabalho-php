@@ -49,5 +49,6 @@ $activeNav = $activeNav ?? '';
         <p>Opções B3 - Projeto acadêmico</p>
     </div>
 </footer>
+<script src="/assets/js/app.js"></script>
 </body>
 </html>

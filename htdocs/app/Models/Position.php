@@ -82,7 +82,6 @@ final class Position extends Model
             return;
         }
 
-        // VENDA — must have an open position with sufficient quantity
         $open = self::findOpen($userId, $contractId);
         if ($open === null) {
             throw new DomainException('Não há posição aberta para este contrato para vender.');

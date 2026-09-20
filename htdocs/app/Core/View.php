@@ -12,7 +12,6 @@ final class View
         $viewFile  = self::path($template);
         $layoutKey = 'layout';
 
-        // Extract variables into the view scope
         extract($data, EXTR_SKIP);
 
         ob_start();

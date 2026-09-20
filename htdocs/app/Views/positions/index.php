@@ -31,7 +31,7 @@ $filter    = $filter    ?? '';
                 <tbody>
                     <?php foreach ($positions as $p):
                         $qtdTotal = (int) $p['quantidade_total'];
-                        $qtdAberta = (int) $p['quantidade_total'];
+                        $qtdAberta = (int) $p['quantidade_aberta'];
                         $pnl = $p['status'] === 'ABERTA' ? ((float) $p['preco_mercado'] - (float) $p['preco_medio']) * $qtdAberta : 0.0;
                     ?>
                         <tr>

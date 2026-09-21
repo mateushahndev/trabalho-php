@@ -61,15 +61,16 @@ final class Position extends Model
             $novaMedia    = ($mediaAtual * $totalAtual + $precoMedio * $quantidade) / $novaTotal;
 
             self::db()->prepare(
-                'UPDATE posicoes SET quantidade_total = :total, quantidade_aberta = :aberta, preco_medio = ROUND(preco_medio, 2) WHERE id = :id'
+                'UPDATE posicoes SET quantidade_total = :total, quantidade_aberta = :aberta, preco_medio = :media WHERE id = :id'
             )->execute(['total' => $novaTotal, 'aberta' => $novaAberta, 'media' => $novaMedia, 'id' => (int)$open['id']]);
         } else {
             self::db()->prepare(
-                'INSERT INTO posicoes (usuario_id, contrato_id, quantidade_total, quantidade_aberta, preco_medio) VALUES (:uid, :cid, :qtd, :qtd, :pm)'
+                'INSERT INTO posicoes (usuario_id, contrato_id, quantidade_total, quantidade_aberta, preco_medio) VALUES (:uid, :cid, :qtdtot, :qtdab, :pm)'
             )->execute([
                 'uid' => $userId,
                 'cid' => $contractId,
-                'qtd' => $quantidade,
+                'qtdtot' => $quantidade,
+                'qtdab' => $quantidade,
                 'pm'  => round($precoMedio, 2),
             ]);
         }

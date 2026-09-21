@@ -1,6 +1,6 @@
 <div class="page-header">
     <h1>Contratos</h1>
-    <a class="btn btn-primary" href="/contratos/novo">+ Novo contrato</a>
+    <a class="btn btn-primary" href="/contratos/create">+ Novo contrato</a>
 </div>
 <section class="panel">
     <?php if (empty($contracts)): ?>
@@ -21,11 +21,11 @@
                 <tbody>
                     <?php foreach ($contracts as $c): ?>
                         <tr>
-                            <td><strong><?= $c['ativo'] ?></strong></td>
-                            <td><span class="badge badge-<?= strtolower($c['tipo_opcao']) ?>"><?= $c['tipo_opcao'] ?></span></td>
-                            <td class="num">R$ <?= number_format($c['preco_exercicio'], 2, ',', '.') ?></td>
+                            <td><strong><?= e($c['ativo']) ?></strong></td>
+                            <td><span class="badge badge-<?= strtolower(e($c['tipo_opcao'])) ?>"><?= e($c['tipo_opcao']) ?></span></td>
+                            <td class="num">R$ <?= number_format((float)$c['preco_exercicio'], 2, ',', '.') ?></td>
                             <td><?= date('d/m/Y', strtotime($c['data_vencto'])) ?></td>
-                            <td class="num">R$ <?= number_format($c['preco_atual'], 4, ',', '.') ?></td>
+                            <td class="num">R$ <?= number_format((float)$c['preco_atual'], 4, ',', '.') ?></td>
                             <td><a class="btn btn-ghost btn-sm" href="/contratos/<?= $c['id'] ?>/editar">Editar</a></td>
                         </tr>
                     <?php endforeach; ?>

@@ -38,6 +38,18 @@ $router->post('/transactions', [TransactionController::class, 'store']);
 // --- Contratos ---
 $router->get('/contracts', [ContractController::class, 'index']);
 $router->get('/contratos', [ContractController::class, 'index']);
+
+// Abertura do formulário de criação (suporta inglês e português)
 $router->get('/contracts/create', [ContractController::class, 'create']);
 $router->get('/contratos/create', [ContractController::class, 'create']);
+$router->get('/contratos/novo', [ContractController::class, 'create']);
+
+// Processamento da criação (POST)
 $router->post('/contracts', [ContractController::class, 'store']);
+$router->post('/contratos', [ContractController::class, 'store']);
+
+// Edição de contrato
+$router->get('/contracts/{id}/edit', [ContractController::class, 'edit']);
+$router->get('/contratos/{id}/editar', [ContractController::class, 'edit']);
+$router->post('/contracts/{id}', [ContractController::class, 'update']);
+$router->post('/contratos/{id}', [ContractController::class, 'update']);

@@ -3,61 +3,66 @@ if (!function_exists('App\Core\csrf_field')) {
     require __DIR__ . '/../../Core/Csrf.php';
 }
 
-$errors   = $errors   ?? [];
-$old      = $old      ?? [];
-$contract = $contract ?? null;
+$editing  = $contract !== null;
+$errors   = $errors ?? [];
+$old      = $old    ?? [];
+
+$f = static function (string $k) use ($contract, $old): string {
+    if ($contract !== null) return (string) $contract[$k];
+    return (string) ($old[$k] ?? '');
+};
 ?>
 
 <div class="page-header">
-    <h1><?= $contract ? 'Editar contrato' : 'Novo contrato' ?></h1>
+    <h1><?= $editing ? 'Editar contrato' : 'Nova contrato de opção' ?></h1>
     <small><a href="/contratos" class="muted">← Voltar</a></small>
 </div>
 
-<form class="form form-card" method="post" action="<?= $contract ? '/contratos/' . $contract['id'] : '/contratos' ?>" novalidate>
+<form class="form form-card" method="post" action="<?= $editing ? '/contratos/' . (int) $contract['id'] : '/contratos' ?>" novalidate>
     <?= \App\Core\csrf_field() ?>
+
+    <?php if (isset($errors['_global'])): ?><div class="flash flash-error"><?= e($errors['_global']) ?></div><?php endif; ?>
 
     <div class="form-row">
         <div class="form-group">
-            <label for="ativo">Ativo *</label>
-            <input type="text" id="ativo" name="ativo" maxlength="20" value="<?= e($old['ativo'] ?? $contract['ativo'] ?? '') ?>">
-            <?php if (isset($errors['ativo'])): ?>
-                <span class="field-error"><?= e(is_array($errors['ativo']) ? $errors['ativo'][0] : $errors['ativo']) ?></span>
-            <?php endif; ?>
+            <label for="ativo">Ativo subjacente *</label>
+            <input type="text" id="ativo" name="ativo"<?= $f('ativo') !== '' ? ' value="' . e($f('ativo')) . '"' : '' ?>
+                placeholder="Ex: PETR4, ITUB4, IVVB11, BOVA11" required>
+            <?php if (isset($errors['ativo'])): ?><span class="field-error"><?= e($errors['ativo']) ?></span><?php endif; ?>
         </div>
+
         <div class="form-group">
-            <label for="tipo_opcao">Tipo *</label>
-            <select id="tipo_opcao" name="tipo_opcao">
-                <option value="">Selecione...</option>
-                <option value="CALL" <?= (($old['tipo_opcao'] ?? $contract['tipo_opcao'] ?? '') === 'CALL') ? 'selected' : '' ?>>CALL</option>
-                <option value="PUT" <?= (($old['tipo_opcao'] ?? $contract['tipo_opcao'] ?? '') === 'PUT') ? 'selected' : '' ?>>PUT</option>
+            <label for="tipo_opcao">Tipo de opção *</label>
+            <select id="tipo_opcao" name="tipo_opcao" required>
+                <option value="">Selecione…</option>
+                <option value="CALL"<?= $f('tipo_opcao') === 'CALL' ? ' selected' : '' ?>>CALL (direito de compra)</option>
+                <option value="PUT"<?= $f('tipo_opcao') === 'PUT' ? ' selected' : '' ?>>PUT (direito de venda)</option>
             </select>
-            <?php if (isset($errors['tipo_opcao'])): ?>
-                <span class="field-error"><?= e(is_array($errors['tipo_opcao']) ? $errors['tipo_opcao'][0] : $errors['tipo_opcao']) ?></span>
-            <?php endif; ?>
+            <?php if (isset($errors['tipo_opcao'])): ?><span class="field-error"><?= e($errors['tipo_opcao']) ?></span><?php endif; ?>
         </div>
     </div>
+
     <div class="form-row">
         <div class="form-group">
-            <label for="preco_exercicio">Strike *</label>
-            <input type="number" step="0.01" id="preco_exercicio" name="preco_exercicio" value="<?= e($old['preco_exercicio'] ?? $contract['preco_exercicio'] ?? '') ?>">
-            <?php if (isset($errors['preco_exercicio'])): ?>
-                <span class="field-error"><?= e(is_array($errors['preco_exercicio']) ? $errors['preco_exercicio'][0] : $errors['preco_exercicio']) ?></span>
-            <?php endif; ?>
+            <label for="preco_exercicio">Preço exercício (strike) *</label>
+            <input type="number" id="preco_exercicio" name="preco_exercicio"<?= $f('preco_exercicio') !== '' ? ' value="' . e($f('preco_exercicio')) . '"' : '' ?> required>
+            <?php if (isset($errors['preco_exercicio'])): ?><span class="field-error"><?= e($errors['preco_exercicio']) ?></span><?php endif; ?>
         </div>
+
         <div class="form-group">
-            <label for="data_vencto">Vencimento *</label>
-            <input type="date" id="data_vencto" name="data_vencto" value="<?= e($old['data_vencto'] ?? $contract['data_vencto'] ?? '') ?>">
-            <?php if (isset($errors['data_vencto'])): ?>
-                <span class="field-error"><?= e(is_array($errors['data_vencto']) ? $errors['data_vencto'][0] : $errors['data_vencto']) ?></span>
-            <?php endif; ?>
+            <label for="data_vencto">Data de vencimento *</label>
+            <input type="date" id="data_vencto" name="data_vencto"<?= $f('data_vencto') !== '' ? ' value="' . e($f('data_vencto')) . '"' : '' ?> required />
+            <?php if (isset($errors['data_vencto'])): ?><span class="field-error"><?= e($errors['data_vencto']) ?></span><?php endif; ?>
         </div>
     </div>
+
     <div class="form-group">
-        <label for="preco_atual">Preço atual *</label>
-        <input type="number" step="0.0001" id="preco_atual" name="preco_atual" value="<?= e($old['preco_atual'] ?? $contract['preco_atual'] ?? '') ?>">
-        <?php if (isset($errors['preco_atual'])): ?>
-            <span class="field-error"><?= e(is_array($errors['preco_atual']) ? $errors['preco_atual'][0] : $errors['preco_atual']) ?></span>
-        <?php endif; ?>
+        <label for="preco_atual">Preço atual de mercado *</label>
+        <input type="number" id="preco_atual" name="preco_atual"<?= $f('preco_atual') !== '' ? ' value="' . e($f('preco_atual')) . '"' : '' ?> required>
+        <?php if (isset($errors['preco_atual'])): ?><span class="field-error"><?= e($errors['preco_atual']) ?></span><?php endif; ?>
     </div>
-    <button type="submit" class="btn btn-primary"><?= $contract ? 'Salvar alterações' : 'Cadastrar' ?></button>
+
+    <div>
+        <button type="submit" class="btn btn-primary"><?= $editing ? 'Salvar alterações' : 'Cadastrar contrato' ?></button>
+    </div>
 </form>

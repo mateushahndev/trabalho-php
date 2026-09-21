@@ -31,8 +31,6 @@ CREATE TABLE posicoes (
     data_abertura    TIMESTAMP     NOT NULL DEFAULT NOW(),
     status           VARCHAR(10)   NOT NULL DEFAULT 'ABERTA' CHECK (status IN ('ABERTA', 'FECHADA')),
     data_fechamento  TIMESTAMP     NULL,
-
-    UNIQUE (usuario_id, contrato_id, status) -- posições só podem ser alteradas e não podem ser duplicadas
 );
 
 CREATE INDEX idx_posicoes_usuario ON posicoes (usuario_id, status);

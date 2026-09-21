@@ -12,6 +12,9 @@ final class Session
         if (session_status() === PHP_SESSION_ACTIVE) {
             return;
         }
+        if (session_status() === PHP_SESSION_NONE) {
+            session_save_path(sys_get_temp_dir());
+        }
         session_name((string) config('session.name', 'opcoes_b3_session'));
         session_set_cookie_params([
             'httponly' => true,

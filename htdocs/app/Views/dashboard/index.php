@@ -59,7 +59,7 @@ $tx        = $transactions ?? [];
                     <td><?= e(br_date($p['data_vencto'])) ?></td>
                     <td class="num"><?= $qtd ?></td>
                     <td class="num">R$ <?= e(money((float)$p['preco_medio'], 2)) ?></td>
-                    <td class="num">R$ <?= e(money((float)$p['preco_mercado'], 4)) ?></td>
+                    <td class="num">R$ <?= e(money((float)$p['preco_mercado'], 2)) ?></td>
                     <td class="num <?= $pnl >= 0 ? 'text-up' : 'text-down' ?>">
                     <?= $pnl >= 0 ? '+' : '-' ?>R$ <?= e(money(abs($pnl))) ?>
                     </td>
@@ -99,7 +99,7 @@ $tx        = $transactions ?? [];
                     <td><span class="badge badge-<?= strtolower((string) $t['operacao']) ?>"><?= e($t['operacao']) ?></span></td>
                     <td><?= e($t['ativo']) ?> <span class="muted">(<?= e($t['tipo_opcao']) ?>)</span></td>
                     <td class="num"><?= (int) $t['quantidade'] ?></td>
-                    <td class="num">R$ <?= e(money((float) $t['preco'], 4)) ?></td>
+                    <td class="num">R$ <?= e(money((float) $t['preco'], 2)) ?></td>
                     <td class="num">R$ <?= e(money((float) $t['preco'] * (int) $t['quantidade'] + (float) $t['comissao'])) ?></td>
                 </tr>
             <?php endforeach; ?>

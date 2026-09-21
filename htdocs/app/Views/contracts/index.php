@@ -23,9 +23,9 @@
                         <tr>
                             <td><strong><?= e($c['ativo']) ?></strong></td>
                             <td><span class="badge badge-<?= strtolower(e($c['tipo_opcao'])) ?>"><?= e($c['tipo_opcao']) ?></span></td>
-                            <td class="num">R$ <?= number_format((float)$c['preco_exercicio'], 2, ',', '.') ?></td>
+                            <td class="num">R$ <?= e(money((float) $c['preco_exercicio'], 2)) ?></td>
                             <td><?= date('d/m/Y', strtotime($c['data_vencto'])) ?></td>
-                            <td class="num">R$ <?= number_format((float)$c['preco_atual'], 4, ',', '.') ?></td>
+                            <td class="num">R$ <?= e(money((float) $c['preco_atual'], 2)) ?></td>
                             <td><a class="btn btn-ghost btn-sm" href="/contratos/<?= $c['id'] ?>/editar">Editar</a></td>
                         </tr>
                     <?php endforeach; ?>

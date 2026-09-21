@@ -1,6 +1,6 @@
 <div class="page-header">
     <h1>Contratos</h1>
-    <a class="btn btn-primary" href="/contratos/create">+ Novo contrato</a>
+    <a class="btn btn-primary" href="/contratos/novo">+ Novo contrato</a>
 </div>
 <section class="panel">
     <?php if (empty($contracts)): ?>

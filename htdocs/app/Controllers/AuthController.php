@@ -13,7 +13,7 @@ final class AuthController extends Controller
     public function showLogin(): void
     {
         if (Session::has('user_id')) {
-            $this->redirect('/dashboard');
+            $this->redirect('/');
         }
         $this->view('auth/login', [
             'pageTitle' => 'Entrar - Opções B3',
@@ -53,13 +53,13 @@ final class AuthController extends Controller
         session_regenerate_id(true);
         Session::set('user_id', (int) $user['id']);
         Session::flash('success', 'Bem-vindo de volta, ' . e($user['nome']) . '!');
-        $this->redirect('/dashboard');
+        $this->redirect('/');
     }
 
     public function showRegister(): void
     {
         if (Session::has('user_id')) {
-            $this->redirect('/dashboard');
+            $this->redirect('/');
         }
         $this->viewAndFlashEmpty('auth/register', 'register', [
             'pageTitle' => 'Criar conta - Opções B3',
@@ -100,7 +100,7 @@ final class AuthController extends Controller
         session_regenerate_id(true);
         Session::set('user_id', $id);
         Session::flash('success', 'Conta criada com sucesso! Bem-vindo, ' . e((string) $data['nome']) . '!');
-        $this->redirect('/dashboard');
+        $this->redirect('/');
     }
 
     public function logout(): void

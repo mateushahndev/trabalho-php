@@ -37,14 +37,14 @@ final class AuthController extends Controller
         ])->errors();
 
         if ($errors !== []) {
-            $this->viewAndFlash('auth/login', $errors, compact('email'), 'login');
+            $this->reRenderForm('auth/login', $errors, compact('email'), 'Entrar - Opções B3');
             return;
         }
 
         $user = User::authenticate($email, $senha);
         if ($user === null) {
             $errors['senha'] = 'E-mail ou senha inválidos.';
-            $this->viewAndFlash('auth/login', $errors, ['email' => $email], 'login');
+            $this->reRenderForm('auth/login', $errors, ['email' => $email], 'Entrar - Opções B3');
             return;
         }
 
@@ -61,9 +61,11 @@ final class AuthController extends Controller
         if (Session::has('user_id')) {
             $this->redirect('/');
         }
-        $this->viewAndFlashEmpty('auth/register', 'register', [
+        $this->view('auth/register', 'register', [
             'pageTitle' => 'Criar conta - Opções B3',
             'layout'    => 'layouts/auth',
+            'errors'    => [],
+            'old'       => [],
         ]);
     }
 
@@ -92,7 +94,7 @@ final class AuthController extends Controller
         }
 
         if ($errors !== []) {
-            $this->viewAndFlash('auth/register', $errors, $data, 'register');
+            $this->reRenderForm('auth/register', $errors, $data, 'Criar conta - Opções B3');
             return;
         }
 
@@ -111,37 +113,15 @@ final class AuthController extends Controller
         $this->redirect('/login');
     }
 
-    private function viewAndFlash(string $view, array $errors, array $data, string $redirect): void
+    private function reRenderForm(string $view, array $errors, array $old, string $pageTitle): void
     {
-        $this->storeOldInput($data);
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
-            unset($errors['_csrf']); // don't show CSRF as field error
-            if ($errors !== []) {
-                $this->view($view, [
-                    'pageTitle' => e(config('app.name')),
-                    'layout'    => 'layouts/auth',
-                    'errors'    => $errors,
-                    'old'       => $data,
-                ]);
-                return;
-            }
-        }
-        // Redireciona à origem com Flash
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            Session::flash('error', 'Verifique os dados e tente novamente.');
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            exit;
-        }
-        $this->redirect('/login');
-    }
+        $this->storeOldInput($old);
+        unset($errors['_csrf']); // never surface the CSRF field as a form error
+        $this->view($view, [
+            'pageTitle' => $pageTitle,
+            'layout'    => 'layouts/auth',
+            'errors'    => $errors,
+            'old'       => $old,
+        ]);
 
-    private function viewAndFlashEmpty(string $view, string $redirect, array $extra): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            Session::flash('error', 'erro genérico (não esperado)');
-            header('Location: /' . $redirect);
-            exit;
-        }
-        $this->view($view, $extra + ['errors' => [], 'old' => []]);
     }
-}

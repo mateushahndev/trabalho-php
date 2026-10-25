@@ -26,10 +26,7 @@ final class Router
     {
         $method = strtoupper($method);
 
-        $csrfValid = true;
-        if ($method === 'POST') {
-            $csrfValid = Csrf::valid($_POST['_csrf']);
-        }
+        $csrfValid = $method !== 'POST' || Csrf::valid($_POST['_csrf'] ?? null);
 
         $path = parse_url($uri, PHP_URL_PATH) ?? '/';
         if ($path !== '/') {
@@ -43,7 +40,7 @@ final class Router
                     if (is_string($k)) $params[$k] = $v;
                 }
 
-                if ($method === 'POST' && !$csrfValid) {
+                if (!$csrfValid) {
                     Session::flash('error', 'Token de segurança inválido. Tente novamente.');
                     header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/'));
                     exit;
@@ -59,17 +56,12 @@ final class Router
         }
 
         if ($method === 'POST') {
-            $csrfValid = Csrf::valid($_POST['_csrf'] ?? null);
-            if (!$csrfValid) {
-                Session::flash('error', 'Token de segurança inválido. Tente novamente.');
-            } else {
-                Session::flash('error', 'Esta ação não está disponível.');
-            }
+            Session::flash('error', $csrfValid ? 'Esta ação não está disponível.' : 'Token de segurança inválido. Tente novamente.');
             header('Location: /');
             exit;
         }
 
-        $this->renderNotFound();
+        View::errorPage(404, 'A página que você procura não existe ou foi removida.');
     }
 
     private static function toRegex(string $pattern): string
@@ -79,16 +71,5 @@ final class Router
 	 */
         $regex = preg_replace('#\{(\w+)\}#', '(?P<$1>[^/]+)', $pattern);
         return '#^' . ($regex ?? '') . '$#u';
-    }
-
-    private function renderNotFound(): void
-    {
-        http_response_code(404);
-        echo View::render('errors/error', [
-            'pageTitle' => '404 - Página não encontrada',
-            'layout'    => 'layouts/auth',
-            'code'      => 404,
-            'message'   => 'A página que você procurando não existe ou foi removida.',
-        ]);
     }
 }

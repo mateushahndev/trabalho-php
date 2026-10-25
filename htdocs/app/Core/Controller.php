@@ -82,13 +82,13 @@ abstract class Controller
 
     protected function notFound(): never
     {
-        http_response_code(404);
-        echo View::render('errors/error', [
-            'pageTitle' => '404 - Pagina nao encontrada',
-            'layout'    => 'layouts/auth',
-            'code'      => 404,
-            'message'   => 'A página que você está procurando não existe ou foi removida.',
-        ]);
-	exit;
+        View::errorPage(404, 'A página que você procura não existe ou foi removida.');
+    }
+
+    protected function page(int $pages): int
+    {
+        $in   = $this->input('page');
+        $page = ($in !== null && ctype_digit($in)) ? (int) $in : 1;
+        return max(1, min($page, max(1, $pages)));
     }
 }

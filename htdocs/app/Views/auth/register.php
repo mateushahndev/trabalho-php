@@ -1,8 +1,4 @@
 <?php
- if (!function_exists('App\Core\csrf_field')) {
-     require __DIR__ . '/../../Core/Csrf.php';
- }
-
 $errors = $errors ?? [];
 $old    = $old    ?? [];
 ?>

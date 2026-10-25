@@ -1,9 +1,4 @@
 <?php
-// Carrega Csrf helpers (define csrf_field())
-if (!function_exists('App\Core\csrf_field')) {
-    require __DIR__ . '/../../Core/Csrf.php';
-}
-
 $errors = $errors ?? [];
 $old    = $old    ?? [];
 $username = htmlspecialchars($old['email'] ?? '', ENT_QUOTES);

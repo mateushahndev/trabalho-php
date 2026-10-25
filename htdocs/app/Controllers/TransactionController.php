@@ -12,6 +12,9 @@ use App\Models\Transaction;
 
 final class TransactionController extends Controller
 {
+    /**
+     * Shared static method called from PositionController::close() and here.
+     */
     public static function recordSale(int $userId, int $contractId, int $quantidade, float $preco, float $comissao, string $dataTransacao): void
     {
         Transaction::record($userId, $contractId, 'VENDA', $quantidade, $preco, $comissao, $dataTransacao);
@@ -24,14 +27,33 @@ final class TransactionController extends Controller
         $uid    = (int) $user->toArray()['id'];
 
         $filterOp = isset($_GET['operacao']) ? strtoupper((string)$_GET['operacao']) : null;
+        if ($filterOp !== null && !in_array($filterOp, ['COMPRA', 'VENDA'], true)) {
+            $filterOp = null;
+        }
 
-        $transactions = Transaction::forUser($uid, $filterOp);
+        $perPage  = max(1, (int) config('pagination.transactions_per_page', 20));
+        $total    = Transaction::countForUser($uid, $filterOp);
+        $pages    = max(1, intdiv($total + $perPage - 1, $perPage));
+        $page     = $this->page($pages);
+
+        $transactions = Transaction::forUser($uid, $filterOp, $perPage, ($page - 1) * $perPage);
+
+        $base = '/transacoes' . ($filterOp !== null ? '?operacao=' . $filterOp : '');
+        $pagerHref = static fn (int $p): string => $base . ($filterOp !== null ? '&' : '?') . 'page=' . $p;
 
         $this->view('transactions/index', [
             'pageTitle'    => 'Transações - Opções B3',
             'activeNav'    => 'transacoes',
             'transactions' => $transactions,
             'filterOp'     => $filterOp ?? '',
+            'pagination'   => [
+                'page'     => $page,
+                'pages'    => $pages,
+                'per_page' => $perPage,
+                'total'    => $total,
+            ],
+            'pagerHref'    => $pagerHref,
+            'layout'       => 'layouts/main',
         ]);
     }
 
@@ -42,7 +64,7 @@ final class TransactionController extends Controller
         $now       = date('Y-m-d H:i:s');
 
         $this->view('transactions/form', [
-            'pageTitle'   => 'Nova transação · Opções B3',
+            'pageTitle'   => 'Nova transação - Opções B3',
             'activeNav'   => 'transacoes',
             'contracts'   => $contracts,
             'errors'      => [],
@@ -54,6 +76,7 @@ final class TransactionController extends Controller
                 'comissao'        => '0',
                 'data_transacao'  => $now,
             ],
+            'layout'        => 'layouts/main',
         ]);
     }
 
@@ -72,17 +95,12 @@ final class TransactionController extends Controller
             'data_transacao'  => $this->input('data_transacao') ?? date('Y-m-d H:i:s'),
         ];
 
-        // T ao invés de espaço para datetime_local
         if (str_contains((string)$data['data_transacao'], ' ') && !str_contains((string)$data['data_transacao'], 'T')) {
             $data['data_transacao'] = str_replace(' ', 'T', (string)$data['data_transacao']);
         }
 
-        // Validar que o contrato existe
         $contractValid = ctype_digit((string) $data['contrato_id'])
             && Contract::findById((int) $data['contrato_id']) !== null;
-        if (!$contractValid) {
-            $data['_bad'] = true;
-        }
 
         $errors = Validator::make($data, [
             'contrato_id'     => ['required', 'int'],
@@ -97,14 +115,13 @@ final class TransactionController extends Controller
             $errors['contrato_id'] = 'Selecione um contrato válido.';
         }
 
-        // Venda não pode exceder quantidade em aberto
         if (!isset($errors['quantidade']) && $data['operacao'] === 'VENDA') {
             $open = Position::findOpen($uid, (int) $data['contrato_id']);
             $abertaQtd = $open ? (int) $open['quantidade_aberta'] : 0;
             if ($open === null) {
                 $errors['quantidade'] = 'Você não possui posição aberta para este contrato.';
             } elseif ((int)(float)$data['quantidade'] > $abertaQtd) {
-                $errors['quantidade'] = "A quantidade de venda ({$data['quantidade']}) supera a posição abierta ({\\$abertaQtd}).";
+                $errors['quantidade'] = "A quantidade de venda ({$data['quantidade']}) supera a posição aberta ({$abertaQtd}).";
             }
         }
 
@@ -116,12 +133,13 @@ final class TransactionController extends Controller
                 'contracts'   => Contract::all(),
                 'errors'      => $errors,
                 'old'         => $data,
+                'layout'        => 'layouts/main',
             ]);
             return;
         }
 
-        // Tempo SQL
         $dtStr = (string) $data['data_transacao'];
+        $sqlDt = null;
         foreach (['Y-m-d\TH:i:s', 'Y-m-d\TH:i'] as $fmt) {
             $dt = \DateTime::createFromFormat($fmt, $dtStr);
             if ($dt !== false) {
@@ -129,18 +147,18 @@ final class TransactionController extends Controller
                 break;
             }
         }
-        if (!isset($sqlDt)) {
+        if ($sqlDt === null) {
             $errors['data_transacao'] = 'Formato de data inválido.';
         }
-        // Re-exibe tela se conversão de formato de data/hora falhar
         if (isset($errors['data_transacao'])) {
             $this->storeOldInput($data);
             $this->view('transactions/form', [
-                'pageTitle'   => 'Nova transação · Opções B3',
+                'pageTitle'   => 'Nova transação - Opções B3',
                 'activeNav'   => 'transacoes',
                 'contracts'   => Contract::all(),
                 'errors'      => $errors,
                 'old'         => $data,
+                'layout'        => 'layouts/main',
             ]);
             return;
         }
@@ -165,6 +183,7 @@ final class TransactionController extends Controller
                 'contracts'   => Contract::all(),
                 'errors'      => $errors,
                 'old'         => $data,
+                'layout'        => 'layouts/main',
             ]);
             return;
         } catch (\Throwable $e) {

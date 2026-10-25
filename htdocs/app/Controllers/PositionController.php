@@ -33,7 +33,7 @@ final class PositionController extends Controller
         $pagerHref = static fn (int $p): string => $base . ($filter !== null ? '&' : '?') . 'page=' . $p;
 
         $this->view('positions/index', [
-            'pageTitle'   => 'Posições · Opções B3',
+            'pageTitle'   => 'Posições - Opções B3',
             'activeNav'   => 'posicoes',
             'positions'   => $positions,
             'positionsTotal' => $total,
@@ -56,7 +56,7 @@ final class PositionController extends Controller
         $contracts = Contract::all();
 
         $this->view('positions/form', [
-            'pageTitle'   => 'Nova posição · Opções B3',
+            'pageTitle'   => 'Nova posição - Opções B3',
             'activeNav'   => 'posicoes',
             'contracts'   => $contracts,
             'contract'    => null,
@@ -94,7 +94,7 @@ final class PositionController extends Controller
         if ($errors !== []) {
             $this->storeOldInput($data);
             $this->view('positions/form', [
-                'pageTitle'   => 'Nova posição · Opções B3',
+                'pageTitle'   => 'Nova posição - Opções B3',
                 'activeNav'   => 'posicoes',
                 'contracts'   => Contract::all(),
                 'contract'    => null,
@@ -117,7 +117,7 @@ final class PositionController extends Controller
             $this->storeOldInput($data);
             $errors['_global'] = $e->getMessage();
             $this->view('positions/form', [
-                'pageTitle'   => 'Nova posição · Opções B3',
+                'pageTitle'   => 'Nova posição - Opções B3',
                 'activeNav'   => 'posicoes',
                 'contracts'   => Contract::all(),
                 'contract'    => null,
@@ -146,7 +146,7 @@ final class PositionController extends Controller
         }
 
         $this->view('positions/close-form', [
-            'pageTitle'  => 'Fechar posição · Opções B3',
+            'pageTitle'  => 'Fechar posição - Opções B3',
             'activeNav'  => 'posicoes',
             'position'   => $position,
             'errors'     => [],
@@ -191,7 +191,7 @@ final class PositionController extends Controller
         if ($errors !== []) {
             $this->storeOldInput($data);
             $this->view('positions/close-form', [
-                'pageTitle'  => 'Fechar posição · Opções B3',
+                'pageTitle'  => 'Fechar posição - Opções B3',
                 'activeNav'  => 'posicoes',
                 'position'   => $position,
                 'errors'     => $errors,
@@ -214,7 +214,7 @@ final class PositionController extends Controller
             $this->storeOldInput($data);
             $errors['_global'] = $e->getMessage();
             $this->view('positions/close-form', [
-                'pageTitle'  => 'Fechar posição · Opções B3',
+                'pageTitle'  => 'Fechar posição - Opções B3',
                 'activeNav'  => 'posicoes',
                 'position'   => $position,
                 'errors'     => $errors,

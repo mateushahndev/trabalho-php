@@ -1,7 +1,4 @@
 <?php
-if (!function_exists('App\Core\csrf_field')) {
-  require __DIR__ . '/../../Core/Csrf.php';
-}
 /** @var string $content */
 /** @var string $pageTitle   (default: config app name) */
 /** @var string $activeNav   = 'dashboard'|'contratos'|'posicoes'|'transacoes'|'perfil'|'' */

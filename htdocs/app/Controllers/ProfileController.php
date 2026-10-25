@@ -36,6 +36,7 @@ final class ProfileController extends Controller
             'user'      => $arr,
             'errors'    => [],
             'old'       => $old,
+            'layout'        => 'layouts/main',
         ]);
     }
 
@@ -61,7 +62,6 @@ final class ProfileController extends Controller
             'senha_confirmacao' => $this->input('senha_confirmacao') ?? '',
         ];
 
-        // Confirmação só faz sentido se senha não for vazia 
         if ($data['senha'] === '' && $data['senha_confirmacao'] !== '') {
             $data['senha_confirmacao'] = '';
         }
@@ -78,7 +78,6 @@ final class ProfileController extends Controller
             $errors['senha_confirmacao'] = 'A confirmação de senha não coincide.';
         }
 
-        // Email deve ser único
         if ($errors === [] && strtolower((string) $arr['email']) !== strtolower((string) $data['email'])) {
             if (User::findByEmail((string) $data['email']) !== null) {
                 $errors['email'] = 'Este e-mail já está em uso por outra conta.';
@@ -93,6 +92,7 @@ final class ProfileController extends Controller
                 'user'      => $arr,
                 'errors'    => $errors,
                 'old'       => $data,
+                'layout'        => 'layouts/main',
             ]);
             return;
         }
@@ -102,7 +102,6 @@ final class ProfileController extends Controller
             $user->updatePassword(password_hash((string) $data['senha'], PASSWORD_DEFAULT));
         }
 
-        // Atualiza nome da sessão caso tenha mudado 
         Session::set('user_nome', (string) $data['nome']);
         Session::flash('success', 'Perfil atualizado com sucesso!');
         $this->redirect('/perfil');

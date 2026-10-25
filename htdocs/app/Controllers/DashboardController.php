@@ -15,11 +15,15 @@ final class DashboardController extends Controller
         $user   = $this->currentUser();
         $userId = (int) $user->toArray()['id'];
 
+        // Fetch open positions with market data for P&L
         $positions = Position::forUser($userId, 'ABERTA');
 
-        $transactionsLimit = 5;
+        // Recent transactions (default 5, capped at 20)
+        $limitIn = $this->input('limit');
+        $transactionsLimit = ($limitIn !== null && ctype_digit($limitIn)) ? max(1, min(20, (int) $limitIn)) : 5;
         $recent = Transaction::recent($userId, $transactionsLimit);
 
+        // Compute dashboard stats
         $invested    = 0.0;
         $unrealizedPnl  = 0.0;
         foreach ($positions as $p) {
@@ -39,12 +43,13 @@ final class DashboardController extends Controller
             ],
             'positions'     => $positions,
             'transactions'  => $recent,
+	    'layout'        => 'layouts/main',
         ]);
     }
 
     private function transactionCountFor(int $userId): int
     {
-        return count(Transaction::forUser($userId));
+        return Transaction::countForUser($userId);
     }
 }
 

@@ -18,19 +18,35 @@ final class PositionController extends Controller
         $userId = (int) $user->toArray()['id'];
 
         $filter  = isset($_GET['status']) ? strtoupper((string)$_GET['status']) : null;
-        $validFilter = ['ABERTA', 'FECHADA'];
-        if ($filter !== null && !in_array($filter, $validFilter, true)) {
+        if ($filter !== null && !in_array($filter, ['ABERTA', 'FECHADA'], true)) {
             $filter = null;
         }
 
-        $positions = Position::forUser($userId, $filter);
+        $perPage = max(1, (int) config('pagination.positions_per_page', 15));
+        $total   = Position::countForUser($userId, $filter);
+        $pages   = max(1, intdiv($total + $perPage - 1, $perPage));
+        $page    = $this->page($pages);
+
+        $positions = Position::forUser($userId, $filter, $perPage, ($page - 1) * $perPage);
+
+        $base = '/posicoes' . ($filter !== null ? '?status=' . $filter : '');
+        $pagerHref = static fn (int $p): string => $base . ($filter !== null ? '&' : '?') . 'page=' . $p;
 
         $this->view('positions/index', [
-            'pageTitle'   => 'Posições - Opções B3',
+            'pageTitle'   => 'Posições · Opções B3',
             'activeNav'   => 'posicoes',
             'positions'   => $positions,
+            'positionsTotal' => $total,
             'filter'      => $filter ?? '',
             'user'        => $user->toArray(),
+            'pagination'  => [
+                'page'     => $page,
+                'pages'    => $pages,
+                'per_page' => $perPage,
+                'total'    => $total,
+            ],
+            'pagerHref'   => $pagerHref,
+            'layout'      => 'layouts/main',
         ]);
     }
 
@@ -40,12 +56,13 @@ final class PositionController extends Controller
         $contracts = Contract::all();
 
         $this->view('positions/form', [
-            'pageTitle'   => 'Nova posição - Opções B3',
+            'pageTitle'   => 'Nova posição · Opções B3',
             'activeNav'   => 'posicoes',
             'contracts'   => $contracts,
             'contract'    => null,
             'errors'      => [],
             'old'         => [],
+            'layout'      => 'layouts/main',
         ]);
     }
 
@@ -77,12 +94,13 @@ final class PositionController extends Controller
         if ($errors !== []) {
             $this->storeOldInput($data);
             $this->view('positions/form', [
-                'pageTitle'   => 'Nova posição - Opções B3',
+                'pageTitle'   => 'Nova posição · Opções B3',
                 'activeNav'   => 'posicoes',
                 'contracts'   => Contract::all(),
                 'contract'    => null,
                 'errors'      => $errors,
                 'old'         => $data,
+                'layout'      => 'layouts/main',
             ]);
             return;
         }
@@ -99,12 +117,13 @@ final class PositionController extends Controller
             $this->storeOldInput($data);
             $errors['_global'] = $e->getMessage();
             $this->view('positions/form', [
-                'pageTitle'   => 'Nova posição - Opções B3',
+                'pageTitle'   => 'Nova posição · Opções B3',
                 'activeNav'   => 'posicoes',
                 'contracts'   => Contract::all(),
                 'contract'    => null,
                 'errors'      => $errors,
                 'old'         => $data,
+                'layout'      => 'layouts/main',
             ]);
             return;
         }
@@ -127,11 +146,12 @@ final class PositionController extends Controller
         }
 
         $this->view('positions/close-form', [
-            'pageTitle'  => 'Fechar posição - Opções B3',
+            'pageTitle'  => 'Fechar posição · Opções B3',
             'activeNav'  => 'posicoes',
             'position'   => $position,
             'errors'     => [],
             'old'        => ['quantidade' => (string) $position['quantidade_aberta']],
+            'layout'      => 'layouts/main',
         ]);
     }
 
@@ -171,23 +191,38 @@ final class PositionController extends Controller
         if ($errors !== []) {
             $this->storeOldInput($data);
             $this->view('positions/close-form', [
-                'pageTitle'  => 'Fechar posição - Opções B3',
+                'pageTitle'  => 'Fechar posição · Opções B3',
                 'activeNav'  => 'posicoes',
                 'position'   => $position,
                 'errors'     => $errors,
                 'old'        => $data,
+                'layout'      => 'layouts/main',
             ]);
             return;
         }
 
-        TransactionController::recordSale(
-            $uid,
-            (int) $contractId,
-            (int)(float) $data['quantidade'],
-            (float) $data['preco'],
-            0.0,
-            date('Y-m-d H:i:s')
-        );
+        try {
+            TransactionController::recordSale(
+                $uid,
+                (int) $contractId,
+                (int)(float) $data['quantidade'],
+                (float) $data['preco'],
+                0.0,
+                date('Y-m-d H:i:s')
+            );
+        } catch (\DomainException $e) {
+            $this->storeOldInput($data);
+            $errors['_global'] = $e->getMessage();
+            $this->view('positions/close-form', [
+                'pageTitle'  => 'Fechar posição · Opções B3',
+                'activeNav'  => 'posicoes',
+                'position'   => $position,
+                'errors'     => $errors,
+                'old'        => $data,
+                'layout'     => 'layouts/main',
+            ]);
+            return;
+        }
 
         Session::flash('success', 'Posição fechada com sucesso! Venda registrada no histórico.');
         $this->redirect('/posicoes');

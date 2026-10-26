@@ -7,12 +7,36 @@ use App\Core\Model;
 
 final class Contract extends Model
 {
-    public static function all(): array
+    public static function all(?int $limit = null, int $offset = 0): array
     {
-        $stmt = self::db()->query(
-            'SELECT * FROM contratos ORDER BY data_vencto ASC, ativo ASC, preco_exercicio ASC'
-        );
-        return $stmt->fetchAll();
+        $sql = 'SELECT * FROM contratos ORDER BY data_vencto ASC, ativo ASC, preco_exercicio ASC, id ASC';
+        if ($limit !== null) {
+            $sql .= sprintf(' LIMIT %d OFFSET %d', max(0, $limit), max(0, $offset));
+        }
+
+        return self::db()->query($sql)->fetchAll();
+    }
+
+    public static function countAll(): int
+    {
+        return (int) self::db()->query('SELECT COUNT(*) FROM contratos')->fetchColumn();
+    }
+
+    public static function distinctAtivos(?int $limit = null, int $offset = 0): array
+    {
+        $sql = 'SELECT DISTINCT ativo FROM contratos ORDER BY ativo ASC';
+        if ($limit !== null) {
+            $sql .= sprintf(' LIMIT %d OFFSET %d', max(0, $limit), max(0, $offset));
+        }
+
+        $stmt = self::db()->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    public static function countDistinctAtivos(): int
+    {
+        $stmt = self::db()->query('SELECT COUNT(DISTINCT ativo) FROM contratos');
+        return (int) $stmt->fetchColumn();
     }
 
     public static function findById(int $id): ?array

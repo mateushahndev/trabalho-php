@@ -20,10 +20,10 @@ return [
     ],
 
     'pagination' => [
-        'markets_per_page'    => 2,
-        'contracts_per_page'  => 2,
-        'positions_per_page'  => 2,
-        'transactions_per_page' => 2,
+        'markets_per_page'    => 20,
+        'contracts_per_page'  => 20,
+        'positions_per_page'  => 20,
+        'transactions_per_page' => 20,
     ],
 
     'finance' => [

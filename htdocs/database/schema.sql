@@ -14,6 +14,7 @@ CREATE TABLE usuarios (
 CREATE TABLE contratos (
     id               SERIAL PRIMARY KEY,
     ativo            VARCHAR(20)   NOT NULL,
+    ticker           VARCHAR(12)   NOT NULL,
     tipo_opcao       VARCHAR(4)    NOT NULL CHECK (tipo_opcao IN ('CALL', 'PUT')),
     preco_exercicio  NUMERIC(12,2) NOT NULL CHECK (preco_exercicio > 0),
     data_vencto      DATE          NOT NULL,
@@ -30,7 +31,7 @@ CREATE TABLE posicoes (
     preco_medio      NUMERIC(12,2) NOT NULL CHECK (preco_medio >= 0),
     data_abertura    TIMESTAMP     NOT NULL DEFAULT NOW(),
     status           VARCHAR(10)   NOT NULL DEFAULT 'ABERTA' CHECK (status IN ('ABERTA', 'FECHADA')),
-    data_fechamento  TIMESTAMP     NULL,
+    data_fechamento  TIMESTAMP     NULL
 );
 
 CREATE INDEX idx_posicoes_usuario ON posicoes (usuario_id, status);

@@ -98,7 +98,7 @@
             <span class="stat-value"><?= e((string)$tm['count']) ?></span>
             <span class="stat-label">P&amp;L Total</span>
             <span class="stat-value <?= $tm['total_pnl'] >= 0 ? 'text-up' : 'text-down' ?>">
-                <?= $tm['total_pnl'] >= 0 ? '+' : '−' ?>R$ <?= e(money(abs($tm['total_pnl']))) ?>
+                <?= R$ <?= e(money(abs($tm['total_pnl']))) ?>
             </span>
         </div>
         <div class="stat-card">
@@ -148,7 +148,7 @@
         <div class="stat-card">
             <span class="stat-label">Alpha (anualizado)</span>
             <span class="stat-value <?= $b['alpha'] >= 0 ? 'text-up' : 'text-down' ?>">
-                <?= $b['alpha'] >= 0 ? '+' : '−' ?><?= e(round($b['alpha'] * 100, 2)) ?>%
+                <?= $b['alpha'] >= 0 ? '+' : '-' ?><?= e(round($b['alpha'] * 100, 2)) ?>%
             </span>
         </div>
         <div class="stat-card">

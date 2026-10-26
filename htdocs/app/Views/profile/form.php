@@ -1,7 +1,4 @@
 <?php
-// Carrega Csrf helpers (define csrf_field())
-require __DIR__ . '/../../Core/Csrf.php';
-
 $user     = $user     ?? null;
 $errors   = $errors   ?? [];
 $old      = $old      ?? [];

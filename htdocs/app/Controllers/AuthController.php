@@ -116,7 +116,7 @@ final class AuthController extends Controller
     private function reRenderForm(string $view, array $errors, array $old, string $pageTitle): void
     {
         $this->storeOldInput($old);
-        unset($errors['_csrf']); // never surface the CSRF field as a form error
+        unset($errors['_csrf']);
         $this->view($view, [
             'pageTitle' => $pageTitle,
             'layout'    => 'layouts/auth',
@@ -125,3 +125,4 @@ final class AuthController extends Controller
         ]);
 
     }
+}

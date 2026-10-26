@@ -8,8 +8,7 @@ use App\Controllers\PositionController;
 use App\Controllers\TransactionController;
 use App\Controllers\ProfileController;
 use App\Controllers\AnalysisController;
-
-/** @var \App\Core\Router $router */
+use App\Controllers\MarketController;
 
 $router->get('/', [DashboardController::class, 'index']);
 
@@ -38,6 +37,6 @@ $router->post('/transacoes',        [TransactionController::class, 'store']);
 $router->get('/perfil',   [ProfileController::class, 'edit']);
 $router->post('/perfil',  [ProfileController::class, 'update']);
 
-// Calculadora de Opções (Mateus)
 $router->get('/analise', [AnalysisController::class, 'index']);
-$router->post('/analise', [AnalysisController::class, 'calculate']);
+$router->get('/mercados', [MarketController::class, 'index']);
+$router->get('/preview-bs', [ContractController::class, 'preview']);

@@ -12,19 +12,36 @@ final class Position extends Model
         . ' FROM posicoes p'
         . ' JOIN contratos c ON c.id = p.contrato_id';
 
-    public static function forUser(int $userId, ?string $status = null): array
+    public static function forUser(int $userId, ?string $status = null, ?int $limit = null, int $offset = 0): array
     {
-        $sql = self::SELECT . ' WHERE p.usuario_id = :usuario_id';
-        $params = ['usuario_id' => $userId];
-        if ($status !== null && in_array($status, ['ABERTA', 'FECHADA'], true)) {
-            $sql .= ' AND p.status = :status';
-            $params['status'] = $status;
+        [$where, $params] = self::userFilter($userId, $status);
+        $sql = self::SELECT . ' WHERE ' . $where . ' ORDER BY p.data_abertura DESC, p.id DESC';
+        if ($limit !== null) {
+            $sql .= sprintf(' LIMIT %d OFFSET %d', max(0, $limit), max(0, $offset));
         }
-        $sql .= ' ORDER BY p.data_abertura DESC, p.id DESC';
 
         $stmt = self::db()->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
+    }
+
+    public static function countForUser(int $userId, ?string $status = null): int
+    {
+        [$where, $params] = self::userFilter($userId, $status);
+        $stmt = self::db()->prepare('SELECT COUNT(*) FROM posicoes p WHERE ' . $where);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    }
+
+    private static function userFilter(int $userId, ?string $status): array
+    {
+        $where  = 'p.usuario_id = :usuario_id';
+        $params = ['usuario_id' => $userId];
+        if ($status !== null && in_array($status, ['ABERTA', 'FECHADA'], true)) {
+            $where .= ' AND p.status = :status';
+            $params['status'] = $status;
+        }
+        return [$where, $params];
     }
 
     public static function findById(int $id): ?array
@@ -61,16 +78,15 @@ final class Position extends Model
             $novaMedia    = ($mediaAtual * $totalAtual + $precoMedio * $quantidade) / $novaTotal;
 
             self::db()->prepare(
-                'UPDATE posicoes SET quantidade_total = :total, quantidade_aberta = :aberta, preco_medio = :media WHERE id = :id'
+                'UPDATE posicoes SET quantidade_total = :total, quantidade_aberta = :aberta, preco_medio = ROUND(preco_medio, 4) WHERE id = :id'
             )->execute(['total' => $novaTotal, 'aberta' => $novaAberta, 'media' => $novaMedia, 'id' => (int)$open['id']]);
         } else {
             self::db()->prepare(
-                'INSERT INTO posicoes (usuario_id, contrato_id, quantidade_total, quantidade_aberta, preco_medio) VALUES (:uid, :cid, :qtdtot, :qtdab, :pm)'
+                'INSERT INTO posicoes (usuario_id, contrato_id, quantidade_total, quantidade_aberta, preco_medio) VALUES (:uid, :cid, :qtd, :qtd, :pm)'
             )->execute([
                 'uid' => $userId,
                 'cid' => $contractId,
-                'qtdtot' => $quantidade,
-                'qtdab' => $quantidade,
+                'qtd' => $quantidade,
                 'pm'  => round($precoMedio, 2),
             ]);
         }

@@ -69,3 +69,5 @@ $filter    = $filter    ?? '';
         </div>
     <?php endif; ?>
 </section>
+
+<?php $labels = ['contrato', 'contratos']; include __DIR__ . '/../partials/pager.php'; ?>

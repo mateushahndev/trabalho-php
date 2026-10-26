@@ -28,6 +28,7 @@ $activeNav = $activeNav ?? '';
 					<a href="/contratos" class="<?= $activeNav === 'contratos' ? 'active' : '' ?>">Contratos</a>
 					<a href="/posicoes" class="<?= $activeNav === 'posicoes' ? 'active' : '' ?>">Posições</a>
 					<a href="/transacoes" class="<?= $activeNav === 'transacoes' ? 'active' : '' ?>">Transações</a>
+					<a href="/mercados" class="<?= $activeNav === 'mercados' ? 'active' : '' ?>">Mercados</a>
 					<a href="/analise" class="<?= $activeNav === 'analise' ? 'active' : '' ?>">Análise</a>
 					<a href="/perfil" class="<?= $activeNav === 'perfil' ? 'active' : '' ?>">Perfil</a>
 				</div>

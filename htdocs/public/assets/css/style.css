@@ -216,6 +216,12 @@ tbody tr:hover {
     white-space: nowrap;
 }
 
+.kv-table {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+    gap: 1rem;
+}
+
 /******************BADGES*********************/
 
 .badge {
@@ -460,6 +466,99 @@ hr {
 .auth-alt a {
     color: #A775D3;
     font-weight: 600;
+}
+
+/******************BLACK-SCHOLES*********************/
+.btn-bs-preview {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-bs-preview:hover {
+    background: rgba(79,70,229,.08);
+}
+
+.bs-panel {
+    margin-top: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(79,70,229,.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.bs-panel p.empty {
+    padding: .5rem 0;
+}
+
+.bs-table {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+}
+.bs-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem; padding: .45rem .75rem;
+    border-radius: 6px;
+}
+
+.bs-row:nth-child(odd) {
+    background: rgba(241,245,249,.6);
+}
+
+.bs-row.bs-head {
+    background: rgba(79,70,229,.1);
+}
+
+.bs-row.bs-head .bs-label, .bs-row.bs-head .bs-value {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.bs-label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+
+.bs-value {
+    font-size: .95rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.bs-greeks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
+    gap: .5rem;
+    margin-top: .85rem;
+}
+
+.bs-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .15rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .5rem .25rem;
+}
+
+.bs-cell .bs-label {
+    font-size: .72rem;
+}
+
+.bs-cell .bs-value {
+    font-size: .85rem;
+}
+
+.bs-panel .empty + .bs-greeks {
+    display: none;
 }
 
 /******************MEDIA QUERIES*********************/

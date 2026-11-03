@@ -87,4 +87,3 @@ php -S localhost:8000 -t public/
 
 6. **Aceder no Navegador:**
    Abra `http://localhost:8000` para aceder ao sistema e criar uma nova conta de utilizador.
-```

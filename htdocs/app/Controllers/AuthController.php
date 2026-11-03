@@ -61,7 +61,7 @@ final class AuthController extends Controller
         if (Session::has('user_id')) {
             $this->redirect('/');
         }
-        $this->view('auth/register', 'register', [
+        $this->view('auth/register', [
             'pageTitle' => 'Criar conta - Opções B3',
             'layout'    => 'layouts/auth',
             'errors'    => [],

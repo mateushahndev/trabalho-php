@@ -103,7 +103,7 @@ final class MarketData
 
         return [
             'spot'                 => end($closes),
-            'last_close'           => end(array_keys($closes)),
+            'last_close'           => array_key_last($closes),
             'observations'         => count($rets),
             'cumulative_return'    => $series->cumRet(),
             'annualized_return'    => $series->anlzdRet() * 100,

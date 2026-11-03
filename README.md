@@ -42,6 +42,7 @@ Concepção estrutural e construção da interface gráfica (UI/UX). Configurou 
 
 ### Pré-requisitos
 - PHP 8.4+ (com tipagem estrita e servidor embutido)
+- Extensões PHP-curl e PHP-zip
 - PostgreSQL 14+
 - Composer (Gestor de pacotes PHP)
 - Git
@@ -51,7 +52,7 @@ Concepção estrutural e construção da interface gráfica (UI/UX). Configurou 
 1. **Clonar o repositório e instalar dependências:**
 ```bash
 git clone [https://github.com/mateushahndev/trabalho-php.git](https://github.com/mateushahndev/trabalho-php.git)
-cd trabalho-php
+cd trabalho-php/htdocs
 composer install
 ```
 

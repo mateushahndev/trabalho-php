@@ -5,29 +5,29 @@ O sistema é uma aplicação web desenvolvida para a disciplina de Linguagens de
 ## Integrantes e Atividades
 
 - **Ian Carlos (iancfa):** 
-# Trabalho 1
+#### Trabalho 1
 
 Implementação completa do módulo de Contratos/Opções (`ContractController`), abrangendo operações de criação, edição e listagem. Responsável pelo suporte a rotas bilíngues (PT/EN), integração do token CSRF nos formulários de contratos, persistência de dados antigos no formulário em caso de erro de validação (`old input`) e gestão de mensagens temporárias de feedback (`Session::flash`).
 
-# Trabalho 2
+#### Trabalho 2
 
 Responsável pela garantia de qualidade (QA), testes de ambiente e documentação técnica. Realizou a auditoria de código, corrigindo erros pontuais.
 
 - **Geraldo Nascimento (geraldog):** 
-# Trabalho 1
+#### Trabalho 1
 
 Desenvolvimento da infraestrutura, arquitetura de dados e integração financeira avançada. Implementou a biblioteca `php-finance`, a calculadora do modelo Black-Scholes, a renderização de gráficos, a paginação global do sistema e refatorou os controladores, rotas e a gestão do CSRF em diversos formulários.
 
-# Trabalho 2
+#### Trabalho 2
 
 Desenvolvimento da infraestrutura, arquitetura de dados e integração financeira avançada. Implementou a biblioteca `php-finance`, a calculadora do modelo Black-Scholes, a renderização de gráficos, a paginação global do sistema e refatorou os controladores, rotas e a gestão do CSRF em diversos formulários.
 
 - **Mateus Hahn (mateushahndev):**  
-# Trabalho 1
+#### Trabalho 1
 
 Concepção e construção da interface gráfica (UI) e experiência visual do sistema. Criação da folha de estilos CSS (`styles.css`), do template de layout principal (`layout.php`), da página de erro 404 personalizada e de todas as views HTML/PHP (telas de login, registo, formulários e tabelas de exibição de dados).
 
-# Trabalho 2
+#### Trabalho 2
 
 Concepção estrutural e construção da interface gráfica (UI/UX). Configurou o ambiente base com Composer (autoload PSR-4), desenvolveu os templates de layout, o menu de navegação, a estilização CSS global e implementou a primeira versão analítica da calculadora de opções e do `AnalysisController`.
 
